@@ -48,18 +48,46 @@ require("./routes/api-routes.js")(app); // NOTE: This doens't do anything yet...
 // ======================================================================
   // Use Handlebars to render the main index.html page with the movies in it.
   app.get("/", function(req, res) {
-    connection.query("SELECT * FROM burgers;", function(err, data) {
+    getAllBurgers(req, res);
+  });
+
+
+
+
+  function getAllBurgers(req, res){
+    connection.query("SELECT * FROM burgers ;", function(err, data) {
       if (err) {
         return res.status(500).end();
       }
-      res.render("index", { burgers: data });
+      
+      var nonDevouredArr = [];
+      var devouredArr = [];
+      for (var i = 0; i < data.length; i++){
+        if (data[i].devoured == 0){
+          console.log(`${data[i].burgerType} is NOT devoured`);
+          nonDevouredArr.push(data[i]);
+        } else {
+          console.log(`${data[i].burgerType} has been devoured`);
+          devouredArr.push(data[i]);
+        }
+      }
+      console.log(`Devoured Burgers: /n${devouredArr}`);
+      console.log(`Non-Devoured Burgers: /n${nonDevouredArr}`);
+
+
+
+
+      res.render("index", { burgersNonDevoured: nonDevouredArr,
+        burgersDevoured: devouredArr });
+      // res.render("index", { burgersDevoured: devouredArr });
+      // res.render("index", { burgersDevoured: data });
     });
-  });
+  }
   
 
   // Create a new Burger ---------- ----------
   app.post("/api/burgers", function(req, res) {
-    connection.query("INSERT INTO burgers (burgerType) VALUES (?)", [req.body.burger], function(err, result) {
+    connection.query("INSERT INTO burgers (burgerType, devoured) VALUES (?, false)", [req.body.burger], function(err, result) {
       if (err) {
         return res.status(500).end();
       }
@@ -96,7 +124,7 @@ app.put("/api/burgers/:id",function (req, res){
   })
 });
 
-// DEVOUR ---------- ----------
+// DELETE ---------- ----------
 app.delete("/api/burgers/:id",function (req, res){
   connection.query("DELETE FROM burgers WHERE id = ?", [req.params.id], function(err, result) {
     if (err) {

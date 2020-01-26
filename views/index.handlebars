@@ -1,7 +1,7 @@
-<h1>Burger thing</h1>
+<h1>Burgers:</h1>
 
 <ul>
-  {{#each burgers}}
+  {{#each burgersNonDevoured}}
     <li>
       <p>
         {{this.id}}. {{this.burgerType}}
@@ -11,6 +11,23 @@
     </li>
   {{/each}}
 </ul>
+
+<h1>Devoured Burgers</h1>
+<ul>
+  {{#each burgersDevoured}}
+    <li>
+      <p>
+        {{this.id}}. {{this.burgerType}}
+        <button data-burgerid="{{this.id}}" class="devourBurger">Devour</button>
+        <button data-burgerid="{{this.id}}" class="deleteBurger">Delete</button>
+      </p>
+    </li>
+  {{/each}}
+</ul>
+
+
+
+
 
 <h2>Add a Burger</h2>
 <form id="addBurger" class="button-size">
@@ -88,6 +105,7 @@
     }).then(
       function() {
         //console.log("deleted: ", id);
+        alert("Deleting Burger");
         location.reload();
       }
     );
@@ -95,35 +113,4 @@
 
 
 
-
-
-
-
-
-
-// UPDATE ---------- ---------- ---------- ---------- ---------- 
-  /*
-  $("#updateburger").on("submit", function(event) {
-    // Make sure to preventDefault on a submit event.
-    event.preventDefault();
-
-    var id = $("[name=id]").val().trim();
-
-    var updatedBurger = {
-      burger: $("#updateburger [name=burger]").val().trim()
-    };
-
-    // Send the PUT request.
-    $.ajax("/api/burgers/" + id, {
-      type: "PUT",
-      data: updatedBurger
-    }).then(
-      function() {
-        console.log("updated id ", id);
-        // Reload the page to get the updated list
-        location.reload();
-      }
-    );
-  });
-  */
 </script>
