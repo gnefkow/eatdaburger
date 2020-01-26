@@ -8,6 +8,9 @@ var app = express();
 // process.env.PORT lets the port be set by Heroku
 var PORT = process.env.PORT || 8080;
 
+// Requiring our models for syncing
+var db = require("./models");
+
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -15,6 +18,8 @@ app.use(express.json());
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+
+// Database Connections
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -32,44 +37,53 @@ connection.connect(function(err) {
   console.log("connected as id " + connection.threadId);
 });
 
-// Use Handlebars to render the main index.html page with the movies in it.
-app.get("/", function(req, res) {
-  connection.query("SELECT * FROM burgers;", function(err, data) {
-    if (err) {
-      return res.status(500).end();
-    }
 
-    res.render("index", { burgers: data });
+// Routes
+// ======================================================================
+require("./routes/api-routes.js")(app); // NOTE: This doens't do anything yet....
+
+
+
+// I wish I could move these things, but I don't know how:
+// ======================================================================
+  // Use Handlebars to render the main index.html page with the movies in it.
+  app.get("/", function(req, res) {
+    connection.query("SELECT * FROM burgers;", function(err, data) {
+      if (err) {
+        return res.status(500).end();
+      }
+      res.render("index", { burgers: data });
+    });
   });
-});
+  
 
-// Create a new movie
-app.post("/api/burgers", function(req, res) {
-  connection.query("INSERT INTO burgers (burgerType) VALUES (?)", [req.body.burger], function(err, result) {
-    if (err) {
-      return res.status(500).end();
-    }
-
-    // Send back the ID of the new movie
-    res.json({ id: result.insertId });
-    console.log(`The ID is: ${ { id: result.insertId } }`);
+  // Create a new Burger ---------- ----------
+  app.post("/api/burgers", function(req, res) {
+    connection.query("INSERT INTO burgers (burgerType) VALUES (?)", [req.body.burger], function(err, result) {
+      if (err) {
+        return res.status(500).end();
+      }
+      // Send back the ID of the new Burger
+      res.json({ id: result.insertId });
+      console.log(`The ID is: ${ { id: result.insertId } }`);
+    });
   });
-});
+  
 
-// Retrieve all movies
-app.get("/api/burgers", function(req, res) {
-  connection.query("SELECT * FROM burgers;", function(err, data) {
-    if (err) {
-      return res.status(500).end();
-    }
-
-    res.json(data);
+  // Retrieve all Burgers ---------- ----------
+  app.get("/api/burgers", function(req, res) {
+    connection.query("SELECT * FROM burgers;", function(err, data) {
+      if (err) {
+        return res.status(500).end();
+      }
+      res.json(data);
+    });
   });
-});
 
-// Update a movie
-app.put("/api/burgers/:id", function(req, res) {
-  connection.query("UPDATE burgers SET burgerType = ? WHERE id = ?", [req.body.burger, req.params.id], function(err, result) {
+
+// DEVOUR ---------- ----------
+app.put("/api/burgers/:id",function (req, res){
+  connection.query("UPDATE burgers SET devoured = true WHERE id = ?", [req.params.id], function(err, result) {
     if (err) {
       // If an error occurred, send a generic server failure
       return res.status(500).end();
@@ -79,26 +93,29 @@ app.put("/api/burgers/:id", function(req, res) {
       return res.status(404).end();
     }
     res.status(200).end();
-
-  });
+  })
 });
 
-// Delete a movie
-app.delete("/api/burger/:id", function(req, res) {
+// DEVOUR ---------- ----------
+app.delete("/api/burgers/:id",function (req, res){
   connection.query("DELETE FROM burgers WHERE id = ?", [req.params.id], function(err, result) {
     if (err) {
       // If an error occurred, send a generic server failure
       return res.status(500).end();
     }
-    else if (result.affectedRows === 0) {
+    else if (result.changedRows === 0) {
       // If no rows were changed, then the ID must not exist, so 404
       return res.status(404).end();
     }
     res.status(200).end();
-
-  });
+  })
 });
 
+
+
+
+// This should be SYNC:
+// ======================================================================
 // Start our server so that it can begin listening to client requests.
 app.listen(PORT, function() {
   // Log (server-side) when our server has started

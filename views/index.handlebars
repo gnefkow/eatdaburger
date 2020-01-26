@@ -5,8 +5,8 @@
     <li>
       <p>
         {{this.id}}. {{this.burgerType}}
-
-        <button data-burgerid="{{this.id}}" class="delburger">Delete</button>
+        <button data-burgerid="{{this.id}}" class="devourBurger">Devour</button>
+        <button data-burgerid="{{this.id}}" class="deleteBurger">Delete</button>
       </p>
     </li>
   {{/each}}
@@ -33,20 +33,9 @@
 <!-- MOVE THIS JAVASCRIPT STUFF -->
 
 <script type="text/javascript">
-  $(".delburger").on("click", function(event) {
-    var id = $(this).data("burgerid");
 
-    // Send the DELETE request.
-    $.ajax("/api/movies/" + id, {
-      type: "DELETE"
-    }).then(
-      function() {
-        console.log("deleted id ", id);
-        // Reload the page to get the updated list
-        location.reload();
-      }
-    );
-  });
+
+
 
 
 // ADD THE BURGER ---------- ---------- ---------- ---------- ---------- 
@@ -73,7 +62,47 @@
 
 
 
+// DEVOUR ---------- ---------- ---------- ---------- ---------- 
+  $(".devourBurger").on("click", function(event) {
+    var id = $(this).data("burgerid");
+
+    // Send the DELETE request.
+    $.ajax("/api/burgers/" + id, {
+      type: "PUT"
+    }).then(
+      function() {
+        console.log("devoured: ", id);
+        location.reload();
+      }
+    );
+  });
+
+
+// DELETE ---------- ---------- ---------- ---------- ---------- 
+  $(".deleteBurger").on("click", function(event) {
+    var id = $(this).data("burgerid");
+
+    // Send the DELETE request.
+    $.ajax("/api/burgers/" + id, {
+      type: "DELETE"
+    }).then(
+      function() {
+        //console.log("deleted: ", id);
+        location.reload();
+      }
+    );
+  });
+
+
+
+
+
+
+
+
+
 // UPDATE ---------- ---------- ---------- ---------- ---------- 
+  /*
   $("#updateburger").on("submit", function(event) {
     // Make sure to preventDefault on a submit event.
     event.preventDefault();
@@ -96,4 +125,5 @@
       }
     );
   });
+  */
 </script>
