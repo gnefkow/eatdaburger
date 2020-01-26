@@ -22,8 +22,8 @@ USE burger_db;
 CREATE TABLE burgers (
   id int NOT NULL AUTO_INCREMENT,
   burgerType varchar(255) NOT NULL,
-  devoured BOOLEAN,
   PRIMARY KEY (id)
 );
 
-
+-- Insert a set of records.
+INSERT INTO burgers (burgerType) VALUES ('Black Bean Burger');
