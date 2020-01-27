@@ -19,14 +19,21 @@ app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-// Database Connections
-var connection = mysql.createConnection({
-  host: "localhost",
-  port: 3306,
-  user: "root",
-  password: "",
-  database: "burger_db"
-});
+// Database Connections (with "if/else" statement for Heroku connection)
+var connection;
+
+//Connection stuff for Heroku:
+if(process.env.JAWSDB_URL) {
+  connection - mysql.createConnection(process.env.JAWSDB_URL);
+} else {
+  connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "",
+    database: "burger_db"
+  });
+}
 
 connection.connect(function(err) {
   if (err) {
@@ -44,48 +51,38 @@ require("./routes/api-routes.js")(app); // NOTE: This doens't do anything yet...
 
 
 
-// I wish I could move these things, but I don't know how:
+// I wish I could move these things, but I don't know how. 
 // ======================================================================
-  // Use Handlebars to render the main index.html page with the movies in it.
+  
+// DISPLAY BURGERS ---------- ---------- ---------- ---------- ---------- ---------- 
   app.get("/", function(req, res) {
-    getAllBurgers(req, res);
-  });
-
-
-
-
-  function getAllBurgers(req, res){
     connection.query("SELECT * FROM burgers ;", function(err, data) {
       if (err) {
         return res.status(500).end();
       }
       
+      //Seperates Burgers into arrays for "devoured" and "nonDevoured":
       var nonDevouredArr = [];
       var devouredArr = [];
       for (var i = 0; i < data.length; i++){
         if (data[i].devoured == 0){
-          console.log(`${data[i].burgerType} is NOT devoured`);
           nonDevouredArr.push(data[i]);
         } else {
-          console.log(`${data[i].burgerType} has been devoured`);
           devouredArr.push(data[i]);
         }
       }
-      console.log(`Devoured Burgers: /n${devouredArr}`);
-      console.log(`Non-Devoured Burgers: /n${nonDevouredArr}`);
 
-
-
-
-      res.render("index", { burgersNonDevoured: nonDevouredArr,
-        burgersDevoured: devouredArr });
-      // res.render("index", { burgersDevoured: devouredArr });
-      // res.render("index", { burgersDevoured: data });
+      // Sends arrays to the handlebars file:
+      res.render("index", { 
+        burgersNonDevoured: nonDevouredArr,
+        burgersDevoured: devouredArr 
+      });
     });
-  }
-  
+  });
 
-  // Create a new Burger ---------- ----------
+
+
+  // Create a new Burger ç ----------
   app.post("/api/burgers", function(req, res) {
     connection.query("INSERT INTO burgers (burgerType, devoured) VALUES (?, false)", [req.body.burger], function(err, result) {
       if (err) {
@@ -98,6 +95,7 @@ require("./routes/api-routes.js")(app); // NOTE: This doens't do anything yet...
   });
   
 
+  
   // Retrieve all Burgers ---------- ----------
   app.get("/api/burgers", function(req, res) {
     connection.query("SELECT * FROM burgers;", function(err, data) {
@@ -107,6 +105,7 @@ require("./routes/api-routes.js")(app); // NOTE: This doens't do anything yet...
       res.json(data);
     });
   });
+
 
 
 // DEVOUR ---------- ----------
@@ -123,6 +122,7 @@ app.put("/api/burgers/:id",function (req, res){
     res.status(200).end();
   })
 });
+
 
 // DELETE ---------- ----------
 app.delete("/api/burgers/:id",function (req, res){

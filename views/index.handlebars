@@ -6,19 +6,20 @@
       <p>
         {{this.id}}. {{this.burgerType}}
         <button data-burgerid="{{this.id}}" class="devourBurger">Devour</button>
-        <button data-burgerid="{{this.id}}" class="deleteBurger">Delete</button>
+        
       </p>
     </li>
   {{/each}}
 </ul>
 
 <h1>Devoured Burgers</h1>
+<p>At the moment, you have to refresh the page after deleting to update the list.</p>
+<p>(Sorry, I know that that is pretty lame, but I haven't figured out how to fix it yet).</p>
 <ul>
   {{#each burgersDevoured}}
     <li>
       <p>
         {{this.id}}. {{this.burgerType}}
-        <button data-burgerid="{{this.id}}" class="devourBurger">Devour</button>
         <button data-burgerid="{{this.id}}" class="deleteBurger">Delete</button>
       </p>
     </li>
@@ -35,81 +36,71 @@
 	<button type="submit">Add to the Menu!</button>
 </form>
 
-{{!-- <h2>Update a Burger</h2>
-<form id="updateburger" class="button-size">
-  <input type="text" name="id" placeholder="id">
-	<textarea type="text" name="movie" placeholder="what do you want to update this movie title to?"></textarea>
-	<button type="submit">Update Movie!</button>
-</form> --}}
 
 
 
-
-<!-- MOVE THIS JAVASCRIPT STUFF -->
-<!-- MOVE THIS JAVASCRIPT STUFF --><!-- MOVE THIS JAVASCRIPT STUFF --><!-- MOVE THIS JAVASCRIPT STUFF --><!-- MOVE THIS JAVASCRIPT STUFF -->
-<!-- MOVE THIS JAVASCRIPT STUFF -->
-
+<!-- JAVASCRIPT -->
+<!-- ========== ========== ========== ========== ========== ========== ========== ========== ========== ========== ========== -->
+<!-- I hate that all of this javascript is in here and not in its own file, but I can't figure out how to move it. -->
 <script type="text/javascript">
 
-
-
-
-
 // ADD THE BURGER ---------- ---------- ---------- ---------- ---------- 
-  $("#addBurger").on("submit", function(event) {
-    // Make sure to preventDefault on a submit event.
-    event.preventDefault();
+$("#addBurger").on("submit", function(event) {
+  // Make sure to preventDefault on a submit event.
+  event.preventDefault();
 
-    var newBurger = {
-      burger: $("#addBurger [name=burger]").val().trim()
-    };
+  var newBurger = {
+    burger: $("#addBurger [name=burger]").val().trim()
+  };
 
-    // Send the POST request.
-    $.ajax("/api/burgers", {
-      type: "POST",
-      data: newBurger
-    }).then(
-      function() {
-        console.log("added new burger");
-        // Reload the page to get the updated list
-        location.reload();
-      }
-    );
-  });
+  // Send the POST request.
+  $.ajax("/api/burgers", {
+    type: "POST",
+    data: newBurger
+  }).then(
+    function() {
+      console.log("added new burger");
+      // Reload the page to get the updated list
+      location.reload();
+    }
+  );
+});
 
 
 
 // DEVOUR ---------- ---------- ---------- ---------- ---------- 
-  $(".devourBurger").on("click", function(event) {
-    var id = $(this).data("burgerid");
+$(".devourBurger").on("click", function(event) {
+  var id = $(this).data("burgerid");
 
-    // Send the DELETE request.
-    $.ajax("/api/burgers/" + id, {
-      type: "PUT"
-    }).then(
-      function() {
-        console.log("devoured: ", id);
-        location.reload();
-      }
-    );
-  });
+  // Send the DELETE request.
+  $.ajax("/api/burgers/" + id, {
+    type: "PUT"
+  }).then(
+    function() {
+      console.log("devoured: ", id);
+      location.reload();
+    }
+  );
+});
 
 
 // DELETE ---------- ---------- ---------- ---------- ---------- 
-  $(".deleteBurger").on("click", function(event) {
-    var id = $(this).data("burgerid");
+$(".deleteBurger").on("click", function(event) {
+  var id = $(this).data("burgerid");
 
-    // Send the DELETE request.
-    $.ajax("/api/burgers/" + id, {
-      type: "DELETE"
-    }).then(
-      function() {
-        //console.log("deleted: ", id);
-        alert("Deleting Burger");
-        location.reload();
-      }
-    );
-  });
+  // Send the DELETE request.
+  $.ajax("/api/burgers/" + id, {
+    type: "DELETE"
+  }).then(
+    function() {
+      //console.log("deleted: ", id);
+      alert("Deleting Burger");
+      location.reload();
+    }
+  );
+});
+
+
 
 
 
