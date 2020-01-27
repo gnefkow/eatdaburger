@@ -1,42 +1,43 @@
-<h1>Burgers:</h1>
+<div class="container test">
+  <h1>Burgers:</h1>
 
-<ul>
-  {{#each burgersNonDevoured}}
-    <li>
-      <p>
-        {{this.id}}. {{this.burgerType}}
-        <button data-burgerid="{{this.id}}" class="devourBurger">Devour</button>
-        
-      </p>
-    </li>
-  {{/each}}
-</ul>
+  <ul>
+    {{#each burgersNonDevoured}}
+      <li>
+        <p>
+          {{this.id}}. {{this.burgerType}}
+          <button data-burgerid="{{this.id}}" class="devourBurger">Devour</button>
+          
+        </p>
+      </li>
+    {{/each}}
+  </ul>
 
-<h1>Devoured Burgers</h1>
-<p>At the moment, you have to refresh the page after deleting to update the list.</p>
-<p>(Sorry, I know that that is pretty lame, but I haven't figured out how to fix it yet).</p>
-<ul>
-  {{#each burgersDevoured}}
-    <li>
-      <p>
-        {{this.id}}. {{this.burgerType}}
-        <button data-burgerid="{{this.id}}" class="deleteBurger">Delete</button>
-      </p>
-    </li>
-  {{/each}}
-</ul>
-
-
-
+  <h1>Devoured Burgers</h1>
+  <p>At the moment, you have to refresh the page after deleting to update the list.</p>
+  <p>(Sorry, I know that that is pretty lame, but I haven't figured out how to fix it yet).</p>
+  <ul>
+    {{#each burgersDevoured}}
+      <li>
+        <p>
+          {{this.id}}. {{this.burgerType}}
+          <button data-burgerid="{{this.id}}" class="deleteBurger">Delete</button>
+        </p>
+      </li>
+    {{/each}}
+  </ul>
 
 
-<h2>Add a Burger</h2>
-<form id="addBurger" class="button-size">
-	<textarea type="text" name="burger"></textarea>
-	<button type="submit">Add to the Menu!</button>
-</form>
 
 
+
+  <h2>Add a Burger</h2>
+  <form id="addBurger" class="button-size">
+    <textarea type="text" name="burger"></textarea>
+    <button type="submit">Add to the Menu!</button>
+  </form>
+
+</div>
 
 
 <!-- JAVASCRIPT -->
