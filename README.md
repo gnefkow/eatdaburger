@@ -13,14 +13,14 @@
 <p>This app can:</p>
 <br>
 <h3>The user can add a burger to the database:</h3>
-<img src="./documentation/BurgerGif-Create.gif">
+<img src="documentation/BurgerGif-Create.gif">
 <br>
 <br>
 <h3> The user can change a burger to "devoured"</h3>
-<img src="./documentation/BurgerGif-Devour.gif">
+<img src="documentation/BurgerGif-Devour.gif">
 <br>
 <br>
 <h3>The user can delete burgers that have been "devoured"</h3>
-<img src="./documentation/BurgerGif-Delete.gif">
+<img src="documentation/BurgerGif-Delete.gif">
 <br>
 <br>
